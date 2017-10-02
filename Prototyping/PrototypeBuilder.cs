@@ -100,6 +100,13 @@ namespace Core.ModularBuilding
                 if (closestSocket != null) {
                     pos = closestSlot.transform.position;
                     rot = closestSlot.transform.rotation;
+
+                    if (_currentPartType == PartType.Wall) {
+                        var a = Vector3.Dot(closestSlot.transform.forward, Camera.main.transform.forward);
+                        if (a > 0) {
+                            rot *= Quaternion.AngleAxis(180, Vector3.up);
+                        }
+                    }
                 }
             }
             _blueprint.transform.position = pos;
