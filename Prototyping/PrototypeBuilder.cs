@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Core.ModularBuildings;
 
-namespace Core.ModularBuilding
+namespace Core.ModularBuildings
 {
-    public class PrototypeBuilder : MonoBehaviour
+    class PrototypeBuilder : MonoBehaviour
     {
+        public Material blueprintMaterial, occupiedBlueprintMaterial;
+
         PartType _currentPartType = PartType.RectFoundation;
         GameObject _blueprint;
 
@@ -35,10 +37,6 @@ namespace Core.ModularBuilding
                 _currentPartType = PartType.Wall;
                 RebuildBlueprint();
             }
-            if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                _currentPartType = PartType.Floor;
-                RebuildBlueprint();
-            }
         }
 
         void RebuildBlueprint()
@@ -64,7 +62,8 @@ namespace Core.ModularBuilding
             }
 
             _blueprint = Instantiate(prefab);
-            _blueprint.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
+            _blueprint.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
         }
 
         void UpdateFoo()
@@ -76,41 +75,40 @@ namespace Core.ModularBuilding
             _blueprint.transform.position = pos;
             _blueprint.transform.rotation = rot;
 
+            BuildingSlot closestSlot = null;
+            var occupied = false;
             var building = BuildingManager.instance.GetBuildingInRange(pos);
             if (building != null) {
                 float closestDistance = float.MaxValue;
-                BuildingSocket closestSocket = null;
-                BuildingSlot closestSlot = null;
 
                 var sockets = _blueprint.GetComponentsInChildren<BuildingSocket>();
                 foreach (var socket in sockets) {
                     float distance;
-                    var slot = building.FindSlot(socket.transform.position, socket.slotType, out distance);
+                    var slot = building.GetClosestSlot(socket.transform.position, socket.slotType, true, out distance);
                     if (slot == null)
                         continue;
 
+                    if (slot.type == BuildingSlotType.Wall) {
+                        var a = Vector3.Dot(slot.transform.forward, Camera.main.transform.forward);
+                        if (a > 0)
+                            continue;
+                    }
+
                     if (distance < 0.25f && distance < closestDistance) {
-                        DebugDraw.DrawMarker(slot.transform.position, 0.25f, Color.green);
                         closestDistance = distance;
-                        closestSocket = socket;
                         closestSlot = slot;
                     }
                 }
 
-                if (closestSocket != null) {
+                if (closestSlot != null) {
                     pos = closestSlot.transform.position;
                     rot = closestSlot.transform.rotation;
-
-                    if (_currentPartType == PartType.Wall) {
-                        var a = Vector3.Dot(closestSlot.transform.forward, Camera.main.transform.forward);
-                        if (a > 0) {
-                            rot *= Quaternion.AngleAxis(180, Vector3.up);
-                        }
-                    }
+                    occupied = !building.IsSlotFree(closestSlot);
                 }
             }
             _blueprint.transform.position = pos;
             _blueprint.transform.rotation = rot;
+            _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
             if (Input.GetMouseButtonDown(0)) {
@@ -122,22 +120,8 @@ namespace Core.ModularBuilding
                     building = buildingGO.AddComponent<Building>();
                 }
 
-                GameObject prefab = null;
-                switch (_currentPartType) {
-                    case PartType.RectFoundation:
-                        prefab = Prefabs.RectFoundation;
-                        break;
-
-                    case PartType.TriFoundation:
-                        prefab = Prefabs.TriFoundation;
-                        break;
-
-                    case PartType.Wall:
-                        prefab = Prefabs.Wall;
-                        break;
-                }
-
-                building.AddPart(prefab, _blueprint.transform.position, _blueprint.transform.rotation);
+                building.AddPart(_currentPartType, closestSlot);
+                building.Rebuild();
             }
         }
     }

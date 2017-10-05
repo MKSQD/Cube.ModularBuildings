@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum BuildingSlotType
 {
+    None,
     Foundation,
     Wall
 }
@@ -12,6 +13,7 @@ public enum BuildingSlotType
 public class BuildingSlot : MonoBehaviour
 {
     public BuildingSlotType type;
+    public bool ignoreForPlacement;
 
     void OnDrawGizmos()
     {

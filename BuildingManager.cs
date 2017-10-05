@@ -12,6 +12,26 @@ namespace Core.ModularBuildings
         {
             return building;
         }
-        
+
+        public int GetNumChildrenForPartType(PartType type)
+        {
+            GameObject prefab = null;
+            switch (type) {
+                case PartType.RectFoundation:
+                    prefab = Prefabs.RectFoundation;
+                    break;
+
+                case PartType.TriFoundation:
+                    prefab = Prefabs.TriFoundation;
+                    break;
+
+                case PartType.Wall:
+                    prefab = Prefabs.Wall;
+                    break;
+            }
+
+            var slots = prefab.GetComponentsInChildren<BuildingSlot>();
+            return slots.Length;
+        }
     }
 }
