@@ -13,6 +13,29 @@ namespace Core.ModularBuildings
             return building;
         }
 
+        public GameObject GetPrefabForPartType(PartType type)
+        {
+            GameObject prefab = null;
+            switch (type) {
+                case PartType.RectFoundation:
+                    prefab = Prefabs.RectFoundation;
+                    break;
+
+                case PartType.TriFoundation:
+                    prefab = Prefabs.TriFoundation;
+                    break;
+
+                case PartType.Wall:
+                    prefab = Prefabs.Wall;
+                    break;
+
+                case PartType.WindowWall:
+                    prefab = Prefabs.WindowWall;
+                    break;
+            }
+            return prefab;
+        }
+
         public int GetNumChildrenForPartType(PartType type)
         {
             GameObject prefab = null;
@@ -27,6 +50,10 @@ namespace Core.ModularBuildings
 
                 case PartType.Wall:
                     prefab = Prefabs.Wall;
+                    break;
+
+                case PartType.WindowWall:
+                    prefab = Prefabs.WindowWall;
                     break;
             }
 

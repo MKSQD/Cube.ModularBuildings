@@ -37,6 +37,10 @@ namespace Core.ModularBuildings
                 _currentPartType = PartType.Wall;
                 RebuildBlueprint();
             }
+            if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                _currentPartType = PartType.WindowWall;
+                RebuildBlueprint();
+            }
         }
 
         void RebuildBlueprint()
@@ -46,20 +50,7 @@ namespace Core.ModularBuildings
                 _blueprint = null;
             }
 
-            GameObject prefab = null;
-            switch (_currentPartType) {
-                case PartType.RectFoundation:
-                    prefab = Prefabs.RectFoundation;
-                    break;
-
-                case PartType.TriFoundation:
-                    prefab = Prefabs.TriFoundation;
-                    break;
-
-                case PartType.Wall:
-                    prefab = Prefabs.Wall;
-                    break;
-            }
+            var prefab = BuildingManager.instance.GetPrefabForPartType(_currentPartType);
 
             _blueprint = Instantiate(prefab);
             _blueprint.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
@@ -87,13 +78,7 @@ namespace Core.ModularBuildings
                     var slot = building.GetClosestSlot(socket.transform.position, socket.slotType, true, out distance);
                     if (slot == null)
                         continue;
-
-                    if (slot.type == BuildingSlotType.Wall) {
-                        var a = Vector3.Dot(slot.transform.forward, Camera.main.transform.forward);
-                        if (a > 0)
-                            continue;
-                    }
-
+                    
                     if (distance < 0.25f && distance < closestDistance) {
                         closestDistance = distance;
                         closestSlot = slot;

@@ -9,15 +9,15 @@ public class BuildingSocket : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        var c = Color.blue;
+        var c = Color.green;
         c.a = 80;
         Gizmos.color = c;
-        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.05f);
+        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.04f);
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.05f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.04f);
     }
 }

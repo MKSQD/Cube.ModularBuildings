@@ -8,7 +8,8 @@ namespace Core.ModularBuildings
     {
         RectFoundation,
         TriFoundation,
-        Wall
+        Wall,
+        WindowWall
     }
 
     [Serializable]
@@ -42,14 +43,22 @@ namespace Core.ModularBuildings
         {
             closestDistance = float.MaxValue;
             BuildingSlot closestSlot = null;
-            foreach (var slot in _partAndChildPartIdxForSlot.Keys) {
+            foreach (var slotAndChildPartIdxPair in _partAndChildPartIdxForSlot) {
+                var slot = slotAndChildPartIdxPair.Key;
                 if (slot.type != slotType)
                     continue;
 
                 if (forPlacement && slot.ignoreForPlacement)
                     continue;
 
-                DebugDraw.DrawMarker(slot.transform.position, 0.25f, Color.green);
+                if (slotType == BuildingSlotType.Wall) {
+                    var part = _parts[slotAndChildPartIdxPair.Value.partIdx];
+                    var a = Vector3.Dot((part.rotation * slot.transform.localRotation) * Vector3.forward, Camera.main.transform.forward);
+                    if (a > -0.5f)
+                        continue;
+
+                    DebugDraw.DrawVector(slot.transform.position, transform.rotation * slot.transform.localRotation * Vector3.forward, 0.8f, 0.1f, Color.red);
+                }
 
                 var dist = (slot.transform.position - position).sqrMagnitude;
                 if (dist < closestDistance) {
@@ -111,16 +120,7 @@ namespace Core.ModularBuildings
                     BuildWall(part, partIdx);
                 }
                 else {
-                    GameObject prefab = null;
-                    switch (part.type) {
-                        case PartType.RectFoundation:
-                            prefab = Prefabs.RectFoundation;
-                            break;
-
-                        case PartType.TriFoundation:
-                            prefab = Prefabs.TriFoundation;
-                            break;
-                    }
+                    var prefab = BuildingManager.instance.GetPrefabForPartType(part.type);
                     BuildPart(prefab, part, partIdx);
                 }
             }
@@ -128,14 +128,16 @@ namespace Core.ModularBuildings
 
         void BuildWall(Part part, int partIdx)
         {
-            //if (_partChildren[part.childrenIdx + 2] != -1)
-            //    return;
+           
 
             var prefab = BuildPart(Prefabs.Wall, part, partIdx);
 
-            //             if (_partChildren[part.childrenIdx + 1] != -1) {
-            //                 prefab.GetComponent<MeshFilter>().sharedMesh = Prefabs.Edge_Wall.GetComponent<MeshFilter>().sharedMesh;
-            //             }
+            if (_partChildren[part.childrenIdx + 1] != -1) {
+                prefab.GetComponent<MeshFilter>().sharedMesh = Prefabs.Edge_Wall.GetComponent<MeshFilter>().sharedMesh;
+            }
+            if (_partChildren[part.childrenIdx + 2] != -1) {
+                prefab.GetComponent<MeshFilter>().sharedMesh = null;
+            }
         }
 
         GameObject BuildPart(GameObject prefab, Part part, int partIdx)
@@ -201,20 +203,7 @@ namespace Core.ModularBuildings
             var newPartIdx = _parts.Count - 1;
 
             //
-            GameObject prefab = null;
-            switch (type) {
-                case PartType.RectFoundation:
-                    prefab = Prefabs.RectFoundation;
-                    break;
-
-                case PartType.TriFoundation:
-                    prefab = Prefabs.TriFoundation;
-                    break;
-
-                case PartType.Wall:
-                    prefab = Prefabs.Wall;
-                    break;
-            }
+            var prefab = BuildingManager.instance.GetPrefabForPartType(type);
 
             var slots = prefab.GetComponentsInChildren<BuildingSlot>();
             foreach (var mySlot in slots) {
@@ -242,6 +231,13 @@ namespace Core.ModularBuildings
             foreach (var socket in sockets) {
                 var otherSlots = GetSlotsAtPosition(pos + rot * socket.transform.localPosition, socket.slotType, newPartIdx);
                 foreach (var otherSlot in otherSlots) {
+                    if (socket.slotType == BuildingSlotType.Wall) {
+                        var part = _parts[_partAndChildPartIdxForSlot[otherSlot].partIdx];
+                        var a = Vector3.Dot((part.rotation * slot.transform.localRotation) * Vector3.forward, rot * Vector3.forward);
+                        if (a > -0.5f)
+                            continue;
+                    }
+
                     var indices = _partAndChildPartIdxForSlot[otherSlot];
                     _partChildren[indices.childIdx] = newPartIdx;
                 }

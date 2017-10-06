@@ -12,6 +12,7 @@ ModelImporter:
     100008: TriFoundation
     100010: Cylinder002
     100012: Edge_Wall
+    100014: WindowWall
     400000: //RootNode
     400002: Foundation
     400004: Wall
@@ -19,6 +20,7 @@ ModelImporter:
     400008: TriFoundation
     400010: Cylinder002
     400012: Edge_Wall
+    400014: WindowWall
     2300000: //RootNode
     2300002: Foundation
     2300004: Wall
@@ -26,6 +28,7 @@ ModelImporter:
     2300008: TriFoundation
     2300010: Cylinder002
     2300012: Edge_Wall
+    2300014: WindowWall
     3300000: //RootNode
     3300002: Foundation
     3300004: Wall
@@ -33,12 +36,14 @@ ModelImporter:
     3300008: TriFoundation
     3300010: Cylinder002
     3300012: Edge_Wall
+    3300014: WindowWall
     4300000: Foundation
     4300002: Wall
     4300004: RectFoundation
     4300006: TriFoundation
     4300008: Cylinder002
     4300010: Edge_Wall
+    4300012: WindowWall
   materials:
     importMaterials: 0
     materialName: 0
