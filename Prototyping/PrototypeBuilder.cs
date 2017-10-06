@@ -20,7 +20,7 @@ namespace Core.ModularBuildings
         void Update()
         {
             UpdatePartType();
-            UpdateFoo();
+            UploadBlueprint();
         }
 
         void UpdatePartType()
@@ -66,7 +66,7 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
         }
 
-        void UpdateFoo()
+        void UploadBlueprint()
         {
             var pos = Camera.main.transform.position + Camera.main.transform.rotation * Vector3.forward * 3f;
             var rot = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up);
@@ -111,7 +111,7 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
-            if (Input.GetMouseButtonDown(0)) {
+            if (!occupied && Input.GetMouseButtonDown(0)) {
                 if (building == null) {
                     var buildingGO = new GameObject("Building");
                     buildingGO.transform.position = _blueprint.transform.position;

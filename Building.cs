@@ -32,8 +32,10 @@ namespace Core.ModularBuildings
         }
 
         Dictionary<BuildingSlot, PartAndChildIdx> _partAndChildPartIdxForSlot = new Dictionary<BuildingSlot, PartAndChildIdx>();
+        Dictionary<BuildingSocket, int> _partIdxForSocket = new Dictionary<BuildingSocket, int>();
 
         List<Part> _parts = new List<Part>();
+        [SerializeField]
         List<int> _partChildren = new List<int>();
 
         public BuildingSlot GetClosestSlot(Vector3 position, BuildingSlotType slotType, bool forPlacement, out float closestDistance)
@@ -58,14 +60,20 @@ namespace Core.ModularBuildings
             return closestSlot;
         }
 
-        public BuildingSlot[] GetSlotsAtPosition(Vector3 position, BuildingSlotType slotType)
+        public BuildingSlot[] GetSlotsAtPosition(Vector3 position, BuildingSlotType slotType, int ignorePartIdx = -1)
         {
             const float threshold = 0.05f;
 
             var slots = new List<BuildingSlot>();
-            foreach (var slot in _partAndChildPartIdxForSlot.Keys) {
+            foreach (var slotChildPartIdxPair in _partAndChildPartIdxForSlot) {
+                var slot = slotChildPartIdxPair.Key;
                 if (slot.type != slotType)
                     continue;
+
+                if (ignorePartIdx != -1) {
+                    if (slotChildPartIdxPair.Value.partIdx == ignorePartIdx)
+                        continue;
+                }
 
                 var dist = (slot.transform.position - position).sqrMagnitude;
                 if (dist < threshold) {
@@ -73,6 +81,23 @@ namespace Core.ModularBuildings
                 }
             }
             return slots.ToArray();
+        }
+
+        BuildingSocket[] GetSocketsAtPosition(Vector3 position, BuildingSlotType slotType)
+        {
+            const float threshold = 0.05f;
+
+            var sockets = new List<BuildingSocket>();
+            foreach (var socket in _partIdxForSocket.Keys) {
+                if (socket.slotType != slotType)
+                    continue;
+
+                var dist = (socket.transform.position - position).sqrMagnitude;
+                if (dist < threshold) {
+                    sockets.Add(socket);
+                }
+            }
+            return sockets.ToArray();
         }
 
         public void Rebuild()
@@ -128,12 +153,19 @@ namespace Core.ModularBuildings
 
                 _partAndChildPartIdxForSlot.Add(newSlots[i], partAndChildIdx);
             }
+
+            var newSockets = newPrefab.GetComponentsInChildren<BuildingSocket>();
+            foreach (var newSocket in newSockets) {
+                _partIdxForSocket.Add(newSocket, partIdx);
+            }
+
             return newPrefab;
         }
 
         void Clear()
         {
             _partAndChildPartIdxForSlot.Clear();
+            _partIdxForSocket.Clear();
             foreach (Transform child in transform) {
                 GameObject.Destroy(child.gameObject);
             }
@@ -166,31 +198,52 @@ namespace Core.ModularBuildings
             };
             _parts.Add(newPart);
 
+            var newPartIdx = _parts.Count - 1;
+
             //
-            {
-                GameObject prefab = null;
-                switch (type) {
-                    case PartType.RectFoundation:
-                        prefab = Prefabs.RectFoundation;
-                        break;
+            GameObject prefab = null;
+            switch (type) {
+                case PartType.RectFoundation:
+                    prefab = Prefabs.RectFoundation;
+                    break;
 
-                    case PartType.TriFoundation:
-                        prefab = Prefabs.TriFoundation;
-                        break;
+                case PartType.TriFoundation:
+                    prefab = Prefabs.TriFoundation;
+                    break;
 
-                    case PartType.Wall:
-                        prefab = Prefabs.Wall;
-                        break;
+                case PartType.Wall:
+                    prefab = Prefabs.Wall;
+                    break;
+            }
+
+            var slots = prefab.GetComponentsInChildren<BuildingSlot>();
+            foreach (var mySlot in slots) {
+                _partChildren.Add(-1);
+            }
+                
+            // Populate children of this part
+            for (int i = 0; i < slots.Length; ++i) {
+                var slot2 = slots[i];
+
+                var otherSockets = GetSocketsAtPosition(pos + rot * slot2.transform.localPosition, slot2.type);
+                if (otherSockets.Length == 0)
+                    continue;
+
+                if (otherSockets.Length > 1) {
+                    Debug.LogWarning("Multiple sockets");
                 }
 
-                var slots = prefab.GetComponentsInChildren<BuildingSlot>();
-                foreach (var mySlot in slots) {
-                    _partChildren.Add(-1);
-                }
+                var childPartIdx = _partIdxForSocket[otherSockets[0]];
+                _partChildren[newPart.childrenIdx + i] = childPartIdx;
+            }
 
-                if (slot != null) {
-                    var indices = _partAndChildPartIdxForSlot[slot];
-                    _partChildren[indices.childIdx] = _parts.Count - 1;
+            // Populate other children
+            var sockets = prefab.GetComponentsInChildren<BuildingSocket>();
+            foreach (var socket in sockets) {
+                var otherSlots = GetSlotsAtPosition(pos + rot * socket.transform.localPosition, socket.slotType, newPartIdx);
+                foreach (var otherSlot in otherSlots) {
+                    var indices = _partAndChildPartIdxForSlot[otherSlot];
+                    _partChildren[indices.childIdx] = newPartIdx;
                 }
             }
         }
