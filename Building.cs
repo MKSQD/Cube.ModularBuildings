@@ -51,14 +51,14 @@ namespace Core.ModularBuildings
                 if (forPlacement && slot.ignoreForPlacement)
                     continue;
 
-                if (slotType == BuildingSlotType.Wall) {
-                    var part = _parts[slotAndChildPartIdxPair.Value.partIdx];
-                    var a = Vector3.Dot((part.rotation * slot.transform.localRotation) * Vector3.forward, Camera.main.transform.forward);
-                    if (a > -0.5f)
-                        continue;
-
-                    DebugDraw.DrawVector(slot.transform.position, transform.rotation * slot.transform.localRotation * Vector3.forward, 0.8f, 0.1f, Color.red);
-                }
+//                 if (slotType == BuildingSlotType.Wall) {
+//                     var part = _parts[slotAndChildPartIdxPair.Value.partIdx];
+//                     var a = Vector3.Dot(part.rotation * slot.transform.localRotation * Vector3.forward, Camera.main.transform.rotation * Vector3.forward);
+//                     if (a > -0.5f)
+//                         continue;
+// 
+//                     DebugDraw.DrawVector(slot.transform.position, part.rotation * slot.transform.localRotation * Vector3.forward, 0.6f, 0.05f, Color.red);
+//                 }
 
                 var dist = (slot.transform.position - position).sqrMagnitude;
                 if (dist < closestDistance) {
@@ -128,8 +128,6 @@ namespace Core.ModularBuildings
 
         void BuildWall(Part part, int partIdx)
         {
-           
-
             var prefab = BuildPart(Prefabs.Wall, part, partIdx);
 
             if (_partChildren[part.childrenIdx + 1] != -1) {
@@ -181,61 +179,53 @@ namespace Core.ModularBuildings
 
         public void AddPart(PartType type, BuildingSlot slot)
         {
-            Vector3 pos;
-            Quaternion rot;
-            if (slot != null) {
-                pos = slot.transform.position;
-                rot = slot.transform.rotation;
-            }
-            else {
-                pos = transform.position;
-                rot = transform.rotation;
-            }
+            var partPosition = slot != null ? slot.transform.position : transform.position;
+            var partRotation = slot != null ? slot.transform.rotation : transform.rotation;
 
             var newPart = new Part {
                 type = type,
-                position = pos,
-                rotation = rot,
+                position = partPosition,
+                rotation = partRotation,
                 childrenIdx = (ushort)_partChildren.Count
             };
             _parts.Add(newPart);
 
             var newPartIdx = _parts.Count - 1;
-
-            //
+            
             var prefab = BuildingManager.instance.GetPrefabForPartType(type);
-
-            var slots = prefab.GetComponentsInChildren<BuildingSlot>();
-            foreach (var mySlot in slots) {
-                _partChildren.Add(-1);
-            }
-                
+            
             // Populate children of this part
+            var slots = prefab.GetComponentsInChildren<BuildingSlot>();
             for (int i = 0; i < slots.Length; ++i) {
                 var slot2 = slots[i];
 
-                var otherSockets = GetSocketsAtPosition(pos + rot * slot2.transform.localPosition, slot2.type);
-                if (otherSockets.Length == 0)
-                    continue;
+                int child = -1;
 
-                if (otherSockets.Length > 1) {
-                    Debug.LogWarning("Multiple sockets");
+                var otherSockets = GetSocketsAtPosition(partPosition + partRotation * slot2.transform.localPosition, slot2.type);
+                if (otherSockets.Length > 0) {
+                    if (otherSockets.Length > 1) {
+                        Debug.LogWarning("Multiple sockets");
+                    }
+                    
+                    child = _partIdxForSocket[otherSockets[0]];
                 }
 
-                var childPartIdx = _partIdxForSocket[otherSockets[0]];
-                _partChildren[newPart.childrenIdx + i] = childPartIdx;
+                _partChildren.Add(child);
             }
 
             // Populate other children
             var sockets = prefab.GetComponentsInChildren<BuildingSocket>();
             foreach (var socket in sockets) {
-                var otherSlots = GetSlotsAtPosition(pos + rot * socket.transform.localPosition, socket.slotType, newPartIdx);
+                var otherSlots = GetSlotsAtPosition(partPosition + partRotation * socket.transform.localPosition, socket.slotType, newPartIdx);
                 foreach (var otherSlot in otherSlots) {
                     if (socket.slotType == BuildingSlotType.Wall) {
-                        var part = _parts[_partAndChildPartIdxForSlot[otherSlot].partIdx];
-                        var a = Vector3.Dot((part.rotation * slot.transform.localRotation) * Vector3.forward, rot * Vector3.forward);
-                        if (a > -0.5f)
+                        var otherPart = _parts[_partAndChildPartIdxForSlot[otherSlot].partIdx];
+                        var a = Vector3.Dot(otherPart.rotation * slot.transform.localRotation * Vector3.forward, partRotation * Vector3.forward);
+                        if (a < 0.3f) {
+                            DebugDraw.DrawVector(otherPart.position, otherPart.rotation * slot.transform.localRotation * Vector3.forward, 0.6f, 0.05f, Color.red, 20);
+                            DebugDraw.DrawVector(otherPart.position, partRotation * Vector3.forward, 0.6f, 0.05f, Color.blue, 20);
                             continue;
+                        }
                     }
 
                     var indices = _partAndChildPartIdxForSlot[otherSlot];

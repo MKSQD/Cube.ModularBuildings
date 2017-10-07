@@ -96,7 +96,8 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
-            if (!occupied && Input.GetMouseButtonDown(0)) {
+            var canBuild = (_currentPartType == PartType.RectFoundation || _currentPartType == PartType.TriFoundation || closestSlot != null) && !occupied && Input.GetMouseButtonDown(0);
+            if (canBuild) {
                 if (building == null) {
                     var buildingGO = new GameObject("Building");
                     buildingGO.transform.position = _blueprint.transform.position;
