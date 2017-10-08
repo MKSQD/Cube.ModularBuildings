@@ -57,7 +57,7 @@ namespace Core.ModularBuildings
             var prefab = BuildingManager.instance.GetPrefabForPartType(_currentPartType);
 
             _blueprint = Instantiate(prefab);
-            _blueprint.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            _blueprint.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
             _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
         }
 
@@ -95,7 +95,7 @@ namespace Core.ModularBuildings
                     occupied = !building.IsSlotFree(closestSlot);
                 }
             }
-            _blueprint.transform.position = pos;
+            _blueprint.transform.position = pos + Vector3.up * 0.025f;
             _blueprint.transform.rotation = rot;
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
@@ -103,7 +103,7 @@ namespace Core.ModularBuildings
             var canBuild = ((_currentPartType == Building.PartType.RectFoundation || _currentPartType == Building.PartType.TriFoundation) && building == null || closestSlot != null) && !occupied;
             if (canBuild && Input.GetMouseButton(0)) {
                 if (building == null) {
-                    building = BuildingManager.instance.CreateBuilding(_blueprint.transform.position, _blueprint.transform.rotation);
+                    building = BuildingManager.instance.CreateBuilding(pos, rot);
                 }
                 building.AddPart(_currentPartType, closestSlot);
                 building.Rebuild();
