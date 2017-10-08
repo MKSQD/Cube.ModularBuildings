@@ -53,7 +53,7 @@ namespace Core.ModularBuildings
 
                 if (forPlacement && slot.ignoreForPlacement)
                     continue;
-                
+
                 var dist = (slot.transform.position - position).sqrMagnitude;
                 if (dist < closestDistance) {
                     closestDistance = dist;
@@ -150,7 +150,7 @@ namespace Core.ModularBuildings
                 var prefab = BuildingManager.instance.GetPrefabForPartType(part.type);
 
                 _childrenIdxForPart.Add((ushort)_partChildren.Count);
-                
+
                 // Populate children of this part
                 var slots = prefab.GetComponentsInChildren<BuildingSlot>();
                 for (int i = 0; i < slots.Length; ++i) {
@@ -171,7 +171,7 @@ namespace Core.ModularBuildings
                 }
             }
         }
-        
+
         void Clear()
         {
             _slots.Clear();
@@ -206,24 +206,46 @@ namespace Core.ModularBuildings
             _data.parts.Add(newPart);
         }
 
-        void Update()
+        public int GetClosestPartIdx(Vector3 position)
         {
-            if (_data.parts == null)
-                return;
-
-            for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
-                var part = _data.parts[partIdx];
-                var childrenIdx = _childrenIdxForPart[partIdx];
-
-                for (int i = 0; i < BuildingManager.instance.GetNumChildrenForPartType(part.type); ++i) {
-                    var childPartIdx = _partChildren[childrenIdx + i];
-                    if (childPartIdx == ushort.MaxValue)
-                        continue;
-
-                    var childPart = _data.parts[childPartIdx];
-                    DebugDraw.DrawLine(part.position, Vector3.Lerp(part.position, childPart.position, 0.5f), Color.blue);
+            float closestDistance = float.MaxValue;
+            int closestPartIdx = -1;
+            for(int i = 0; i < _data.parts.Count; ++i) {
+                var part = _data.parts[i];
+                var diff = (part.position - position).sqrMagnitude;
+                if(diff < closestDistance) {
+                    closestDistance = diff;
+                    closestPartIdx = i;
                 }
             }
+            return closestPartIdx;
         }
+
+        public void RemovePart(int partIdx)
+        {
+            Clear();
+            _data.parts[partIdx] = _data.parts[_data.parts.Count - 1];
+            _data.parts.RemoveAt(_data.parts.Count - 1);
+        }
+
+//         void Update()
+//         {
+//             if (_data.parts == null)
+//                 return;
+// 
+//             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
+//                 var part = _data.parts[partIdx];
+//                 var childrenIdx = _childrenIdxForPart[partIdx];
+// 
+//                 for (int i = 0; i < BuildingManager.instance.GetNumChildrenForPartType(part.type); ++i) {
+//                     var childPartIdx = _partChildren[childrenIdx + i];
+//                     if (childPartIdx == ushort.MaxValue)
+//                         continue;
+// 
+//                     var childPart = _data.parts[childPartIdx];
+//                     DebugDraw.DrawLine(part.position, Vector3.Lerp(part.position, childPart.position, 0.5f), Color.blue);
+//                 }
+//             }
+//         }
     }
 }

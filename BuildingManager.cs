@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 namespace Core.ModularBuildings
@@ -68,7 +67,7 @@ namespace Core.ModularBuildings
                 building.data = JsonUtility.FromJson<Building.BuildingData>(str);
                 building.Rebuild();
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Debug.LogError("Failed to load building: " + e);
                 Destroy(building);
             }
@@ -78,7 +77,7 @@ namespace Core.ModularBuildings
         {
             if (building == null || building.data.parts.Count == 0)
                 return;
-            
+
             var str = JsonUtility.ToJson(building.data);
             File.WriteAllText("test.building", str);
         }

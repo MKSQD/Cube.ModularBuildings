@@ -104,6 +104,16 @@ namespace Core.ModularBuildings
                 building.AddPart(_currentPartType, closestSlot);
                 building.Rebuild();
             }
+
+            //
+            if (building != null && Input.GetMouseButtonDown(1)) {
+
+                var partIdx = building.GetClosestPartIdx(pos);
+                if(partIdx != -1) {
+                    building.RemovePart(partIdx);
+                    building.Rebuild();
+                }
+            }
         }
     }
 }
