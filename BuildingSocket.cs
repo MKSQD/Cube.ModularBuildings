@@ -7,6 +7,7 @@ public class BuildingSocket : MonoBehaviour
 {
     public BuildingSlotType slotType;
 
+    [HideInInspector]
     public ushort partIdx = ushort.MaxValue;
 
     void OnDrawGizmos()

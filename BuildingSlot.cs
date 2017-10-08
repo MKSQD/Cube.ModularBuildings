@@ -15,7 +15,9 @@ public class BuildingSlot : MonoBehaviour
     public BuildingSlotType type;
     public bool ignoreForPlacement;
 
+    [HideInInspector]
     public ushort partIdx = ushort.MaxValue;
+    [HideInInspector]
     public byte childIdx = byte.MaxValue;
 
     void OnDrawGizmos()
