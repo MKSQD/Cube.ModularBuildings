@@ -7,6 +7,8 @@ public class BuildingSocket : MonoBehaviour
 {
     public BuildingSlotType slotType;
 
+    public ushort partIdx = ushort.MaxValue;
+
     void OnDrawGizmos()
     {
         var c = Color.green;

@@ -15,6 +15,9 @@ public class BuildingSlot : MonoBehaviour
     public BuildingSlotType type;
     public bool ignoreForPlacement;
 
+    public ushort partIdx = ushort.MaxValue;
+    public byte childIdx = byte.MaxValue;
+
     void OnDrawGizmos()
     {
         var c = Color.yellow;
