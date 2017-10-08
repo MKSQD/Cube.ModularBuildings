@@ -49,8 +49,6 @@ namespace Core.ModularBuildings
 
         void RebuildBlueprint()
         {
-            Debug.Log(_currentPartType);
-
             if (_blueprint != null) {
                 Destroy(_blueprint);
                 _blueprint = null;
