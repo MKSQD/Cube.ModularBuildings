@@ -9,8 +9,9 @@ public struct BuildingPartTypeDefinition
     public GameObject prefab;
 }
 
-[CreateAssetMenu(menuName = "Core/BuildingPartTypes")]
-public class BuildingPartTypesDefintion : ScriptableObject
+[CreateAssetMenu(menuName = "Core/Building Type Definition")]
+public class BuildingTypeDefintion : ScriptableObject
 {
+    public string name;
     public List<BuildingPartTypeDefinition> partTypes;
 }

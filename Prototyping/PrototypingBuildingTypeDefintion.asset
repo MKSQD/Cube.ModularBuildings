@@ -9,8 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 722d76872a857e04884fe756ad5b38ce, type: 3}
-  m_Name: PrototypingBuildingPartTypes
+  m_Name: PrototypingBuildingTypeDefintion
   m_EditorClassIdentifier: 
+  name: Prototyping
   partTypes:
   - name: RectFoundation
     prefab: {fileID: 1950254654644986, guid: 61240dfe0f989df4ab17670fafe2471f, type: 2}

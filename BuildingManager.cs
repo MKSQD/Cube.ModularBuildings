@@ -8,13 +8,18 @@ namespace Core.ModularBuildings
     {
         public Building building;
 
-        public Building CreateBuilding(Vector3 position, Quaternion rotation)
+        public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)
         {
             var buildingGO = new GameObject("Building");
             buildingGO.transform.position = position;
             buildingGO.transform.rotation = rotation;
 
             building = buildingGO.AddComponent<Building>();
+
+            var data = building.data;
+            data.type = type;
+            building.data = data;
+
             return building;
         }
 
@@ -23,9 +28,9 @@ namespace Core.ModularBuildings
             return building;
         }
         
-        public int GetNumChildrenForPartType(BuildingPartType type)
+        public int GetNumChildrenForPartType(BuildingType type, byte partType)
         {
-            var prefab = BuildingPartTypes.GetPrefab(type);
+            var prefab = BuildingPartTypes.GetPrefab(type, partType);
             if (prefab == null)
                 return 0;
 
@@ -37,7 +42,7 @@ namespace Core.ModularBuildings
         {
             try {
                 if (building == null) {
-                    CreateBuilding(Vector3.zero, Quaternion.identity);
+                    CreateBuilding(BuildingType.Prototyping, Vector3.zero, Quaternion.identity);
                 }
 
                 var str = File.ReadAllText("test.building");
