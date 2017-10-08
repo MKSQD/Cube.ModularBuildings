@@ -6,19 +6,10 @@ namespace Core.ModularBuildings
 {
     public class Building : MonoBehaviour
     {
-        public enum PartType : byte
-        {
-            RectFoundation,
-            TriFoundation,
-            Wall,
-            WindowWall,
-            StairFoundation
-        }
-
         [Serializable]
         public struct Part
         {
-            public PartType type;
+            public BuildingPartType type;
             public Vector3 position;
             public Quaternion rotation;
         }
@@ -114,7 +105,7 @@ namespace Core.ModularBuildings
         {
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];
-                var prefab = BuildingManager.instance.GetPrefabForPartType(part.type);
+                var prefab = BuildingPartTypes.GetPrefab(part.type);
                 BuildPart(prefab, part, (ushort)partIdx);
             }
         }
@@ -148,7 +139,7 @@ namespace Core.ModularBuildings
         {
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];
-                var prefab = BuildingManager.instance.GetPrefabForPartType(part.type);
+                var prefab = BuildingPartTypes.GetPrefab(part.type);
 
                 _childrenIdxForPart.Add((ushort)_partChildren.Count);
 
@@ -190,7 +181,7 @@ namespace Core.ModularBuildings
             return _partChildren[childrenIdx + slot.childIdx] == ushort.MaxValue;
         }
 
-        public void AddPart(PartType type, BuildingSlot slot)
+        public void AddPart(BuildingPartType type, BuildingSlot slot)
         {
             var partPosition = slot != null ? slot.transform.position : transform.position;
             var partRotation = slot != null ? slot.transform.rotation : transform.rotation;

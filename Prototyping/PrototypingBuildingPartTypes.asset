@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722d76872a857e04884fe756ad5b38ce, type: 3}
+  m_Name: PrototypingBuildingPartTypes
+  m_EditorClassIdentifier: 
+  partTypes:
+  - name: RectFoundation
+    prefab: {fileID: 1950254654644986, guid: 61240dfe0f989df4ab17670fafe2471f, type: 2}
+  - name: TriFoundation
+    prefab: {fileID: 1415841052733450, guid: 123e40f20a477864493bdfe82993fc3f, type: 2}
+  - name: Wall
+    prefab: {fileID: 1458963676255814, guid: cbb58701a5883c84dbb1293aa3639189, type: 2}
+  - name: WindowWall
+    prefab: {fileID: 1683569970055684, guid: 11e4c47dd322344489eeb4a897e0ed49, type: 2}
+  - name: StairFoundation
+    prefab: {fileID: 1593047796480676, guid: a5ccbe19d863e6144a4611783e7b9f7b, type: 2}

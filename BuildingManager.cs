@@ -22,37 +22,10 @@ namespace Core.ModularBuildings
         {
             return building;
         }
-
-        public GameObject GetPrefabForPartType(Building.PartType type)
+        
+        public int GetNumChildrenForPartType(BuildingPartType type)
         {
-            GameObject prefab = null;
-            switch (type) {
-                case Building.PartType.RectFoundation:
-                    prefab = Prefabs.RectFoundation;
-                    break;
-
-                case Building.PartType.TriFoundation:
-                    prefab = Prefabs.TriFoundation;
-                    break;
-
-                case Building.PartType.StairFoundation:
-                    prefab = Prefabs.StairFoundation;
-                    break;
-
-                case Building.PartType.Wall:
-                    prefab = Prefabs.Wall;
-                    break;
-
-                case Building.PartType.WindowWall:
-                    prefab = Prefabs.WindowWall;
-                    break;
-            }
-            return prefab;
-        }
-
-        public int GetNumChildrenForPartType(Building.PartType type)
-        {
-            var prefab = GetPrefabForPartType(type);
+            var prefab = BuildingPartTypes.GetPrefab(type);
             if (prefab == null)
                 return 0;
 

@@ -9,7 +9,7 @@ namespace Core.ModularBuildings
     {
         public Material blueprintMaterial, occupiedBlueprintMaterial;
 
-        Building.PartType _currentPartType = Building.PartType.RectFoundation;
+        BuildingPartType _currentPartType = BuildingPartType.RectFoundation;
         GameObject _blueprint;
 
         void Start()
@@ -26,23 +26,23 @@ namespace Core.ModularBuildings
         void UpdatePartType()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                _currentPartType = Building.PartType.RectFoundation;
+                _currentPartType = BuildingPartType.RectFoundation;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                _currentPartType = Building.PartType.TriFoundation;
+                _currentPartType = BuildingPartType.TriFoundation;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                _currentPartType = Building.PartType.Wall;
+                _currentPartType = BuildingPartType.Wall;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                _currentPartType = Building.PartType.StairFoundation;
+                _currentPartType = BuildingPartType.StairFoundation;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha5)) {
-                _currentPartType = Building.PartType.WindowWall;
+                _currentPartType = BuildingPartType.WindowWall;
                 RebuildBlueprint();
             }
         }
@@ -54,7 +54,7 @@ namespace Core.ModularBuildings
                 _blueprint = null;
             }
 
-            var prefab = BuildingManager.instance.GetPrefabForPartType(_currentPartType);
+            var prefab = BuildingPartTypes.GetPrefab(_currentPartType);
 
             _blueprint = Instantiate(prefab);
             _blueprint.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
@@ -100,7 +100,7 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
-            var canBuild = ((_currentPartType == Building.PartType.RectFoundation || _currentPartType == Building.PartType.TriFoundation) && building == null || closestSlot != null) && !occupied;
+            var canBuild = ((_currentPartType == BuildingPartType.RectFoundation || _currentPartType == BuildingPartType.TriFoundation) && building == null || closestSlot != null) && !occupied;
             if (canBuild && Input.GetMouseButton(0)) {
                 if (building == null) {
                     building = BuildingManager.instance.CreateBuilding(pos, rot);
