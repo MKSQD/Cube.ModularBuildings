@@ -9,7 +9,7 @@ namespace Core.ModularBuildings
     {
         public Material blueprintMaterial, occupiedBlueprintMaterial;
 
-        PartType _currentPartType = PartType.RectFoundation;
+        Building.PartType _currentPartType = Building.PartType.RectFoundation;
         GameObject _blueprint;
 
         void Start()
@@ -26,19 +26,19 @@ namespace Core.ModularBuildings
         void UpdatePartType()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                _currentPartType = PartType.RectFoundation;
+                _currentPartType = Building.PartType.RectFoundation;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                _currentPartType = PartType.TriFoundation;
+                _currentPartType = Building.PartType.TriFoundation;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                _currentPartType = PartType.Wall;
+                _currentPartType = Building.PartType.Wall;
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                _currentPartType = PartType.WindowWall;
+                _currentPartType = Building.PartType.WindowWall;
                 RebuildBlueprint();
             }
         }
@@ -96,16 +96,11 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
-            var canBuild = (_currentPartType == PartType.RectFoundation || _currentPartType == PartType.TriFoundation || closestSlot != null) && !occupied && Input.GetMouseButtonDown(0);
-            if (canBuild) {
+            var canBuild = ((_currentPartType == Building.PartType.RectFoundation || _currentPartType == Building.PartType.TriFoundation) && building == null || closestSlot != null) && !occupied;
+            if (canBuild && Input.GetMouseButton(0)) {
                 if (building == null) {
-                    var buildingGO = new GameObject("Building");
-                    buildingGO.transform.position = _blueprint.transform.position;
-                    buildingGO.transform.rotation = _blueprint.transform.rotation;
-
-                    building = buildingGO.AddComponent<Building>();
+                    building = BuildingManager.instance.CreateBuilding(_blueprint.transform.position, _blueprint.transform.rotation);
                 }
-
                 building.AddPart(_currentPartType, closestSlot);
                 building.Rebuild();
             }
