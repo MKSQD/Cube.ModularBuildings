@@ -13,6 +13,7 @@ ModelImporter:
     100010: Cylinder002
     100012: Edge_Wall
     100014: WindowWall
+    100016: StairFoundations
     400000: //RootNode
     400002: Foundation
     400004: Wall
@@ -21,6 +22,7 @@ ModelImporter:
     400010: Cylinder002
     400012: Edge_Wall
     400014: WindowWall
+    400016: StairFoundations
     2300000: //RootNode
     2300002: Foundation
     2300004: Wall
@@ -29,6 +31,7 @@ ModelImporter:
     2300010: Cylinder002
     2300012: Edge_Wall
     2300014: WindowWall
+    2300016: StairFoundations
     3300000: //RootNode
     3300002: Foundation
     3300004: Wall
@@ -37,6 +40,7 @@ ModelImporter:
     3300010: Cylinder002
     3300012: Edge_Wall
     3300014: WindowWall
+    3300016: StairFoundations
     4300000: Foundation
     4300002: Wall
     4300004: RectFoundation
@@ -44,6 +48,7 @@ ModelImporter:
     4300008: Cylinder002
     4300010: Edge_Wall
     4300012: WindowWall
+    4300014: StairFoundations
   materials:
     importMaterials: 0
     materialName: 0

@@ -38,6 +38,10 @@ namespace Core.ModularBuildings
                 RebuildBlueprint();
             }
             if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                _currentPartType = Building.PartType.StairFoundation;
+                RebuildBlueprint();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5)) {
                 _currentPartType = Building.PartType.WindowWall;
                 RebuildBlueprint();
             }

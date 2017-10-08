@@ -11,7 +11,8 @@ namespace Core.ModularBuildings
             RectFoundation,
             TriFoundation,
             Wall,
-            WindowWall
+            WindowWall,
+            StairFoundation
         }
 
         [Serializable]

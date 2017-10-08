@@ -35,6 +35,10 @@ namespace Core.ModularBuildings
                     prefab = Prefabs.TriFoundation;
                     break;
 
+                case Building.PartType.StairFoundation:
+                    prefab = Prefabs.StairFoundation;
+                    break;
+
                 case Building.PartType.Wall:
                     prefab = Prefabs.Wall;
                     break;
