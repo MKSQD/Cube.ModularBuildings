@@ -6,6 +6,7 @@ namespace Core.ModularBuildings
 {
     public class BuildingManager : MonoBehaviourSingleton<BuildingManager>
     {
+        [HideInInspector]
         public Building building;
 
         public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)

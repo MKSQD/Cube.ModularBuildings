@@ -7,7 +7,8 @@ namespace Core.ModularBuildings
 {
     class PrototypeBuilder : MonoBehaviour
     {
-        public Material blueprintMaterial, occupiedBlueprintMaterial;
+        public Material blueprintMaterial = null;
+        public Material occupiedBlueprintMaterial = null;
 
         PrototypingBuildingPartType _currentPartType = PrototypingBuildingPartType.RectFoundation;
         GameObject _blueprint;
