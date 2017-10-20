@@ -126,7 +126,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1458963676255814}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20.941929, y: -21.390911, z: 10.362743}
+  m_LocalPosition: {x: 0.18675184, y: 0.855, z: -6.950229}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4453655356106582}
@@ -171,11 +171,12 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0c614868266d08a44a1415eb28ebffc0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186,6 +187,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -226,6 +228,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   ignoreForPlacement: 1
+  partIdx: 65535
+  childIdx: 255
 --- !u!114 &114463903075112696
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -239,6 +243,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   ignoreForPlacement: 0
+  partIdx: 65535
+  childIdx: 255
 --- !u!114 &114597878265217462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -252,6 +258,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   ignoreForPlacement: 1
+  partIdx: 65535
+  childIdx: 255
 --- !u!114 &114946719402325502
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -264,3 +272,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotType: 2
+  partIdx: 65535

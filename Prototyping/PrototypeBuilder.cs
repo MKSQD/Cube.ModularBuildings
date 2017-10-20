@@ -58,8 +58,11 @@ namespace Core.ModularBuildings
             var prefab = BuildingPartTypes.GetPrefab(BuildingType.Prototyping, (byte)_currentPartType);
 
             _blueprint = Instantiate(prefab);
-            _blueprint.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
+            _blueprint.transform.localScale = Vector3.one * 3.025f;
             _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
+            foreach (var collider in _blueprint.GetComponents<Collider>()) {
+                collider.enabled = false;
+            }
         }
 
         void UploadBlueprint()
