@@ -9,7 +9,7 @@ public enum BuildingSlotType
     Wall
 }
 
-[AddComponentMenu("Core/Building/Slot")]
+[AddComponentMenu("Core.Building/Slot")]
 public class BuildingSlot : MonoBehaviour
 {
     public BuildingSlotType type;
