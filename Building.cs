@@ -9,7 +9,7 @@ namespace Core.ModularBuildings
         [Serializable]
         public struct Part
         {
-            public byte type;
+            public BuildingPartType type;
             public Vector3 position;
             public Quaternion rotation;
         }
@@ -30,7 +30,7 @@ namespace Core.ModularBuildings
                 _data = value;
             }
         }
-
+        
         List<BuildingSlot> _slots = new List<BuildingSlot>();
         List<BuildingSocket> _sockets = new List<BuildingSocket>();
         List<ushort> _childrenIdxForPart = new List<ushort>();
@@ -106,7 +106,7 @@ namespace Core.ModularBuildings
         {
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];
-                var prefab = BuildingPartTypes.GetPrefab(_data.type, part.type);
+                var prefab = _data.type.GetPrefabForPartType(part.type);
                 BuildPart(prefab, part, (ushort)partIdx);
             }
         }
@@ -140,7 +140,7 @@ namespace Core.ModularBuildings
         {
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];
-                var prefab = BuildingPartTypes.GetPrefab(_data.type, part.type);
+                var prefab = _data.type.GetPrefabForPartType(part.type);
 
                 _childrenIdxForPart.Add((ushort)_partChildren.Count);
 
@@ -182,7 +182,7 @@ namespace Core.ModularBuildings
             return _partChildren[childrenIdx + slot.childIdx] == ushort.MaxValue;
         }
 
-        public void AddPart(byte type, BuildingSlot slot)
+        public void AddPart(BuildingPartType type, BuildingSlot slot)
         {
             var partPosition = slot != null ? slot.transform.position : transform.position;
             var partRotation = slot != null ? slot.transform.rotation : transform.rotation;
@@ -226,11 +226,13 @@ namespace Core.ModularBuildings
             if (_data.parts == null)
                 return;
 
+            var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
+
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];
                 var childrenIdx = _childrenIdxForPart[partIdx];
 
-                for (int i = 0; i < BuildingManager.instance.GetNumChildrenForPartType(_data.type, part.type); ++i) {
+                for (int i = 0; i < buildingManager.GetNumChildrenForPartType(_data.type, part.type); ++i) {
                     var childPartIdx = _partChildren[childrenIdx + i];
                     if (childPartIdx == ushort.MaxValue)
                         continue;

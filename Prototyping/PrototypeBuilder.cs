@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Core.ModularBuildings;
+using System;
 
 namespace Core.ModularBuildings
 {
@@ -10,8 +11,21 @@ namespace Core.ModularBuildings
         public Material blueprintMaterial = null;
         public Material occupiedBlueprintMaterial = null;
 
-        PrototypingBuildingPartType _currentPartType = PrototypingBuildingPartType.RectFoundation;
+        [SerializeField]
+        BuildingType _buildingType;
+
+        BuildingPartType _currentPartType;
         GameObject _blueprint;
+
+        [Serializable]
+        struct KeyPartBinding
+        {
+            public KeyCode key;
+            public BuildingPartType partType;
+        }
+
+        [SerializeField]
+        KeyPartBinding[] _bindings;
 
         void Start()
         {
@@ -26,25 +40,11 @@ namespace Core.ModularBuildings
 
         void UpdatePartType()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                _currentPartType = PrototypingBuildingPartType.RectFoundation;
-                RebuildBlueprint();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                _currentPartType = PrototypingBuildingPartType.TriFoundation;
-                RebuildBlueprint();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                _currentPartType = PrototypingBuildingPartType.Wall;
-                RebuildBlueprint();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                _currentPartType = PrototypingBuildingPartType.StairFoundation;
-                RebuildBlueprint();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha5)) {
-                _currentPartType = PrototypingBuildingPartType.WindowWall;
-                RebuildBlueprint();
+            foreach (var binding in _bindings) {
+                if (Input.GetKeyDown(binding.key)) {
+                    _currentPartType = binding.partType;
+                    RebuildBlueprint();
+                }
             }
         }
 
@@ -55,7 +55,10 @@ namespace Core.ModularBuildings
                 _blueprint = null;
             }
 
-            var prefab = BuildingPartTypes.GetPrefab(BuildingType.Prototyping, (byte)_currentPartType);
+            if (_currentPartType == null)
+                return;
+
+            var prefab = _buildingType.GetPrefabForPartType(_currentPartType);
 
             _blueprint = Instantiate(prefab);
             _blueprint.transform.localScale = Vector3.one * 3.025f;
@@ -67,16 +70,21 @@ namespace Core.ModularBuildings
 
         void UploadBlueprint()
         {
+            if (_blueprint == null)
+                return;
+
+            var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
+
             var buildPosition = Camera.main.transform.position + Camera.main.transform.rotation * Vector3.forward * 3f;
             var buildRotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up);
             DebugDraw.DrawMarker(buildPosition, 0.25f, Color.blue);
 
             _blueprint.transform.position = buildPosition;
             _blueprint.transform.rotation = buildRotation;
-
+            
             BuildingSlot closestSlot = null;
             var occupied = false;
-            var building = BuildingManager.instance.GetBuildingInRange(buildPosition);
+            var building = buildingManager.GetBuildingInRange(buildPosition);
             if (building != null) {
                 float closestDistance = float.MaxValue;
 
@@ -104,12 +112,12 @@ namespace Core.ModularBuildings
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
 
             //
-            var canBuild = ((_currentPartType == PrototypingBuildingPartType.RectFoundation || _currentPartType == PrototypingBuildingPartType.TriFoundation) && building == null || closestSlot != null) && !occupied;
+            var canBuild = (_currentPartType.canCreateNewBuilding && building == null || closestSlot != null) && !occupied;
             if (canBuild && Input.GetMouseButton(0)) {
                 if (building == null) {
-                    building = BuildingManager.instance.CreateBuilding(BuildingType.Prototyping, buildPosition, buildRotation);
+                    building = buildingManager.CreateBuilding(_buildingType, buildPosition, buildRotation);
                 }
-                building.AddPart((byte)_currentPartType, closestSlot);
+                building.AddPart(_currentPartType, closestSlot);
                 building.Rebuild();
             }
 
