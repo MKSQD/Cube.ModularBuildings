@@ -11,9 +11,12 @@ namespace Core.ModularBuildings
         public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)
         {
             var buildingGO = new GameObject("Building");
-            buildingGO.transform.position = position;
-            buildingGO.transform.rotation = rotation;
-            buildingGO.transform.localScale = Vector3.one * 3;
+
+            var buildingTransform = buildingGO.transform;
+            buildingTransform.parent = transform.parent;
+            buildingTransform.position = position;
+            buildingTransform.rotation = rotation;
+            buildingTransform.localScale = Vector3.one * 3;
 
             building = buildingGO.AddComponent<Building>();
 
