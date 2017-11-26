@@ -13,7 +13,7 @@ namespace Core.ModularBuildings
             var buildingGO = new GameObject("Building");
 
             var buildingTransform = buildingGO.transform;
-            buildingTransform.parent = transform.parent;
+            buildingTransform.parent = transform;
             buildingTransform.position = position;
             buildingTransform.rotation = rotation;
             buildingTransform.localScale = Vector3.one * 3;
