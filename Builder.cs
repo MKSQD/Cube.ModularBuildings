@@ -1,11 +1,12 @@
 ﻿using Core.Gameplay;
+using Core.Networking;
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Core.ModularBuildings
 {
-    [CreateAssetMenu(menuName = "Core.ModularBuildings/Builder")]
+    [AddComponentMenu("Core.ModularBuildings/Builder")]
     public class Builder : EquippableItem
     {
         [Serializable]
@@ -36,8 +37,6 @@ namespace Core.ModularBuildings
         public override void Equip(EquippableItemType itemType)
         {
             _type = (BuilderType)itemType;
-
-            Debug.Log("Builder Equip isServer=" + isServer);
         }
 
         public override void Use()
@@ -45,27 +44,32 @@ namespace Core.ModularBuildings
             if (!isClient)
                 return;
 
-            var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
-
-            var canBuild = (_currentPartType.canCreateNewBuilding && _currentBuildingTheBlueprintIsSnappedTo == null || _currentBuildingClosestSlot != null) && !_currentBuildingSlotOccupied;
-            if (canBuild && Input.GetMouseButton(0)) {
-                if (_currentBuildingTheBlueprintIsSnappedTo == null) {
-                    _currentBuildingTheBlueprintIsSnappedTo = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
-                }
-                _currentBuildingTheBlueprintIsSnappedTo.AddPart(_currentPartType, _currentBuildingClosestSlot);
-                _currentBuildingTheBlueprintIsSnappedTo.Rebuild();
-            }
-
-            //
-            if (_currentBuildingTheBlueprintIsSnappedTo != null && Input.GetMouseButtonDown(1)) {
-
-                var partIdx = _currentBuildingTheBlueprintIsSnappedTo.GetClosestPartIdx(_currentBuildingBuildPosition);
-                if (partIdx != -1) {
-                    _currentBuildingTheBlueprintIsSnappedTo.RemovePart(partIdx);
-                    _currentBuildingTheBlueprintIsSnappedTo.Rebuild();
-                }
-            }
+//             if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
+//                 RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType, _currentBuildingClosestSlot);
+//             }
+//             else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
+//                 var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
+//                 RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
+//             }
         }
+
+//         [ReplicaRpc(RpcTarget.Server)]
+//         void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType, BuildingSlot slot)
+//         {
+//             var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
+// 
+//             var newBuilding = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
+//             newBuilding.AddPart(partType, _currentBuildingClosestSlot);
+//             newBuilding.Rebuild();
+//         }
+//         
+//         [ReplicaRpc(RpcTarget.Server)]
+//         void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot)
+//         {
+//             var building = buildingReplica.GetComponent<Building>();
+//             building.AddPart(partType, slot);
+//             building.Rebuild();
+//         }
 
         void Start()
         {
