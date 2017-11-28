@@ -44,7 +44,7 @@ namespace Core.ModularBuildings
 
         void Awake()
         {
-            SystemProvider.SetSystem(gameObject, this);
+            SystemProvider.SetSystem<IBuildingSystem>(gameObject, this);
         }
 
         //         void Start()
