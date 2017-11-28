@@ -226,7 +226,7 @@ namespace Core.ModularBuildings
             if (_data.parts == null)
                 return;
 
-            var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
+            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
                 var part = _data.parts[partIdx];

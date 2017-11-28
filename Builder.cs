@@ -131,7 +131,7 @@ namespace Core.ModularBuildings
             if (_blueprint == null)
                 return;
 
-            var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
+            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
             var buildPosition = Camera.main.transform.position + Camera.main.transform.rotation * Vector3.forward * 3f;
             var buildRotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up);

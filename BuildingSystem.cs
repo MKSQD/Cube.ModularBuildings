@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Core.ModularBuildings
 {
-    public class BuildingManager : MonoBehaviour
+    public class BuildingSystem : MonoBehaviour, IBuildingSystem
     {
         [HideInInspector]
         public Building building;
