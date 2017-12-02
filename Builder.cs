@@ -44,32 +44,32 @@ namespace Core.ModularBuildings
             if (!isClient)
                 return;
 
-//             if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
-//                 RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType, _currentBuildingClosestSlot);
-//             }
-//             else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
-//                 var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
-//                 RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
-//             }
+            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
+                RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType, _currentBuildingClosestSlot);
+            }
+            else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
+                var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
+                RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
+            }
         }
 
-//         [ReplicaRpc(RpcTarget.Server)]
-//         void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType, BuildingSlot slot)
-//         {
-//             var buildingManager = SystemProvider.GetSystem<BuildingManager>(gameObject);
-// 
-//             var newBuilding = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
-//             newBuilding.AddPart(partType, _currentBuildingClosestSlot);
-//             newBuilding.Rebuild();
-//         }
-//         
-//         [ReplicaRpc(RpcTarget.Server)]
-//         void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot)
-//         {
-//             var building = buildingReplica.GetComponent<Building>();
-//             building.AddPart(partType, slot);
-//             building.Rebuild();
-//         }
+        [ReplicaRpc(RpcTarget.Server)]
+        void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType, BuildingSlot slot)
+        {
+            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+
+            var newBuilding = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
+            newBuilding.AddPart(partType, _currentBuildingClosestSlot);
+            newBuilding.Rebuild();
+        }
+        
+        [ReplicaRpc(RpcTarget.Server)]
+        void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot)
+        {
+            var building = buildingReplica.GetComponent<Building>();
+            building.AddPart(partType, slot);
+            building.Rebuild();
+        }
 
         void Start()
         {
