@@ -10,8 +10,7 @@ namespace Core.ModularBuildings
     public class Builder : EquippableItem
     {
         [Serializable]
-        struct KeyPartBinding
-        {
+        struct KeyPartBinding {
             public KeyCode key;
             public BuildingPartType partType;
         }
@@ -27,71 +26,73 @@ namespace Core.ModularBuildings
         BuildingSlot _currentBuildingClosestSlot;
         Vector3 _currentBuildingBuildPosition;
         Quaternion _currentBuildingBuildRotation;
-        
+
         [SerializeField]
         KeyPartBinding[] _bindings;
 
         BuilderType _type;
-        Pawn _pawn;
-        
-        public override void Equip(EquippableItemType itemType)
-        {
+        //Pawn _pawn;
+
+        float _nextShotTime;
+
+        public override void Equip(EquippableItemType itemType) {
             _type = (BuilderType)itemType;
+
+            //_pawn = GetComponentInParent<Pawn>();
+            //Assert.IsNotNull(_pawn);
+
+            RebuildBlueprint();
         }
 
-        public override void Use()
-        {
+        public override void Use() {
             if (!isClient)
                 return;
 
-            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
-                RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType, _currentBuildingClosestSlot);
+            if (Time.time < _nextShotTime)
+                return;
+
+            _nextShotTime = Time.time + 1f;
+
+
+            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding)
+            {
+                Debug.Log("RpcBuildNew");
+                RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType);
+
             }
-            else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
-                var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
-                RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
-            }
+//             else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied)
+//                 {
+//                 var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
+//                 RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
+//             }
         }
 
         [ReplicaRpc(RpcTarget.Server)]
-        void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType, BuildingSlot slot)
-        {
+        void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType) {
             var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
             var newBuilding = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
             newBuilding.AddPart(partType, _currentBuildingClosestSlot);
             newBuilding.Rebuild();
         }
-        
+
         [ReplicaRpc(RpcTarget.Server)]
-        void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot)
-        {
+        void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot) {
             var building = buildingReplica.GetComponent<Building>();
             building.AddPart(partType, slot);
             building.Rebuild();
         }
 
-        void Start()
-        {
-            _pawn = GetComponentInParent<Pawn>();
-            Assert.IsNotNull(_pawn);
-
-            RebuildBlueprint();
-        }
-
-        void Update()
-        {
+        void Update() {
             UpdatePartType();
             UploadBlueprint();
         }
 
-        void OnDestroy()
-        {
+        void OnDestroy() {
             DestroyBlueprint();
         }
 
-        void UpdatePartType()
-        {
+        void UpdatePartType() {
             foreach (var binding in _bindings) {
                 if (Input.GetKeyDown(binding.key)) {
                     _currentPartType = binding.partType;
@@ -100,11 +101,10 @@ namespace Core.ModularBuildings
             }
         }
 
-        void RebuildBlueprint()
-        {
+        void RebuildBlueprint() {
             DestroyBlueprint();
 
-            if (!isClient || _currentPartType == null || _pawn.controller == null)
+            if (!isClient || _currentPartType == null /* || _pawn.controller == null*/)
                 return;
 
             var prefab = _type.buildingType.GetPrefabForPartType(_currentPartType);
@@ -117,8 +117,7 @@ namespace Core.ModularBuildings
             }
         }
 
-        void DestroyBlueprint()
-        {
+        void DestroyBlueprint() {
             if (_blueprint == null)
                 return;
 
@@ -126,8 +125,7 @@ namespace Core.ModularBuildings
             _blueprint = null;
         }
 
-        void UploadBlueprint()
-        {
+        void UploadBlueprint() {
             if (_blueprint == null)
                 return;
 
@@ -168,7 +166,7 @@ namespace Core.ModularBuildings
             _blueprint.transform.position = buildPosition + Vector3.up * 0.025f;
             _blueprint.transform.rotation = buildRotation;
             _blueprint.GetComponent<Renderer>().sharedMaterial = !occupied ? blueprintMaterial : occupiedBlueprintMaterial;
-            
+
             _currentBuildingTheBlueprintIsSnappedTo = building;
             _currentBuildingSlotOccupied = occupied;
             _currentBuildingClosestSlot = closestSlot;

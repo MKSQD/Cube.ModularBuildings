@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Core.Networking;
 
 namespace Core.ModularBuildings
 {
-    public class Building : MonoBehaviour
+    public class Building : ReplicaBehaviour
     {
         [Serializable]
         public struct Part
