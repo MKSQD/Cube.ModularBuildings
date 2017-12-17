@@ -53,26 +53,20 @@ namespace Core.ModularBuildings
 
             _nextShotTime = Time.time + 1f;
 
-
-            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding)
-            {
-                Debug.Log("RpcBuildNew");
+            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
                 RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType);
-
+            } else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
+                var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
+                RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
             }
-//             else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied)
-//                 {
-//                 var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
-//                 RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
-//             }
         }
 
         [ReplicaRpc(RpcTarget.Server)]
         void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType) {
             var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
-            var newBuilding = buildingManager.CreateBuilding(_type.buildingType, _currentBuildingBuildPosition, _currentBuildingBuildRotation);
-            newBuilding.AddPart(partType, _currentBuildingClosestSlot);
+            var newBuilding = buildingManager.CreateBuilding(_type.buildingType, position, rotation);
+            newBuilding.AddPart(partType, null);
             newBuilding.Rebuild();
         }
 

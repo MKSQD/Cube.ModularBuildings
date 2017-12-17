@@ -11,4 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a556247a800e8fb4c8f1375487b58bb1, type: 3}
   m_Name: WallBuildingPartType
   m_EditorClassIdentifier: 
+  networkAssetId: 273dec643919d2e49a47e9080477e3b4
   canCreateNewBuilding: 0

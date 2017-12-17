@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45150aed3c8199b4485daae45b333641, type: 3}
-  m_Name: PrototypingBuildingType
+  m_Name: DefaultBuildingType
   m_EditorClassIdentifier: 
   _partTypes:
   - partType: {fileID: 11400000, guid: 47e70edc5d240c944816ad54ce67d7a0, type: 2}

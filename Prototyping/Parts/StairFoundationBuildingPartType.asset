@@ -11,4 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a556247a800e8fb4c8f1375487b58bb1, type: 3}
   m_Name: StairFoundationBuildingPartType
   m_EditorClassIdentifier: 
+  networkAssetId: 362d7701fb5dd8947b460c409c0af78a
   canCreateNewBuilding: 1

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
+using Core.Networking;
 
 namespace Core.ModularBuildings
 {
@@ -17,6 +18,8 @@ namespace Core.ModularBuildings
             buildingTransform.position = position;
             buildingTransform.rotation = rotation;
             buildingTransform.localScale = Vector3.one * 3;
+
+            var replica = buildingGO.AddComponent<Replica>();
 
             building = buildingGO.AddComponent<Building>();
 
