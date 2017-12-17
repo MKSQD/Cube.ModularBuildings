@@ -31,15 +31,13 @@ namespace Core.ModularBuildings
         KeyPartBinding[] _bindings;
 
         BuilderType _type;
-        //Pawn _pawn;
+        Pawn _pawn;
 
         float _nextShotTime;
 
-        public override void Equip(EquippableItemType itemType) {
+        public override void Equip(EquippableItemType itemType, Replica owner) {
             _type = (BuilderType)itemType;
-
-            //_pawn = GetComponentInParent<Pawn>();
-            //Assert.IsNotNull(_pawn);
+            _pawn = GetComponentInParent<Pawn>();
 
             RebuildBlueprint();
         }
@@ -98,7 +96,7 @@ namespace Core.ModularBuildings
         void RebuildBlueprint() {
             DestroyBlueprint();
 
-            if (!isClient || _currentPartType == null /* || _pawn.controller == null*/)
+            if (!isClient || _currentPartType == null || _pawn.controller == null)
                 return;
 
             var prefab = _type.buildingType.GetPrefabForPartType(_currentPartType);
