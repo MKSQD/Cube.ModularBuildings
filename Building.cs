@@ -37,6 +37,11 @@ namespace Core.ModularBuildings
         List<ushort> _childrenIdxForPart = new List<ushort>();
         List<ushort> _partChildren = new List<ushort>();
 
+        void Start() {
+            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+            buildingManager.RegisterBuilding(this);
+        }
+
         public BuildingSlot GetClosestSlot(Vector3 position, BuildingSlotType slotType, bool forPlacement, out float closestDistance)
         {
             closestDistance = float.MaxValue;

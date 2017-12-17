@@ -11,6 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45150aed3c8199b4485daae45b333641, type: 3}
   m_Name: DefaultBuildingType
   m_EditorClassIdentifier: 
+  serverBuildingPrefab: {fileID: 1304427430039026, guid: b81c0cd8f7a747441842f00d393abeae,
+    type: 2}
   _partTypes:
   - partType: {fileID: 11400000, guid: 47e70edc5d240c944816ad54ce67d7a0, type: 2}
     prefab: {fileID: 1950254654644986, guid: 61240dfe0f989df4ab17670fafe2471f, type: 2}

@@ -1,27 +1,30 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 using Core.Networking;
+using Core.Networking.Server;
+using UnityEngine.Assertions;
 
 namespace Core.ModularBuildings
 {
     public class BuildingSystem : MonoBehaviour, IBuildingSystem
     {
-        [HideInInspector]
-        public Building building;
+        [SerializeField]
+        Building _building; //#TODO replace with List<Building>
 
         public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)
         {
-            var buildingGO = new GameObject("Building");
+            Assert.IsNotNull(type.serverBuildingPrefab);
 
-            var buildingTransform = buildingGO.transform;
-            buildingTransform.parent = transform;
-            buildingTransform.position = position;
-            buildingTransform.rotation = rotation;
-            buildingTransform.localScale = Vector3.one * 3;
+            var server = SystemProvider.GetSystem<UnityServer>(gameObject);
+            var buildingGo = server.replicaManager.InstantiateReplica(type.serverBuildingPrefab);
 
-            var replica = buildingGO.AddComponent<Replica>();
+            buildingGo.transform.position = position;
+            buildingGo.transform.rotation = rotation;
+            buildingGo.transform.localScale = Vector3.one * 3;
 
-            building = buildingGO.AddComponent<Building>();
+            var building = buildingGo.GetComponent<Building>();
+            Assert.IsNotNull(building);
 
             var data = building.data;
             data.type = type;
@@ -30,9 +33,13 @@ namespace Core.ModularBuildings
             return building;
         }
 
+        public void RegisterBuilding(Building newBuilding) {
+            _building = newBuilding;
+        }
+
         public Building GetBuildingInRange(Vector3 position)
         {
-            return building;
+            return _building;
         }
         
         public int GetNumChildrenForPartType(BuildingType type, BuildingPartType partType)
@@ -69,10 +76,10 @@ namespace Core.ModularBuildings
 
         void OnApplicationQuit()
         {
-            if (building == null || building.data.parts.Count == 0)
+            if (_building == null || _building.data.parts.Count == 0)
                 return;
 
-            var str = JsonUtility.ToJson(building.data);
+            var str = JsonUtility.ToJson(_building.data);
             File.WriteAllText("test.building", str);
         }
     }

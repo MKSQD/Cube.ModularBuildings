@@ -79,7 +79,7 @@ namespace Core.ModularBuildings
 
         void Update() {
             UpdatePartType();
-            UploadBlueprint();
+            UpdateBlueprint();
         }
 
         void OnDestroy() {
@@ -119,7 +119,7 @@ namespace Core.ModularBuildings
             _blueprint = null;
         }
 
-        void UploadBlueprint() {
+        void UpdateBlueprint() {
             if (_blueprint == null)
                 return;
 

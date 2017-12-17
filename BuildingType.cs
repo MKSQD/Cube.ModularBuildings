@@ -11,6 +11,8 @@ public class BuildingType : ScriptableObject
         public GameObject prefab;
     }
 
+    public GameObject serverBuildingPrefab;
+
     [SerializeField]
     Entry[] _partTypes;
 
