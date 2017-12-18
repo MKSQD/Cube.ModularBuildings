@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Core.Networking;
+using Core.Networking.Server;
+
+using BitStream = Core.Networking.Shared.BitStream;
 
 namespace Core.ModularBuildings
 {
+    //#TODO Layers for client/server
+    //#TODO chunks (sync bigger buildings)
+
     public class Building : ReplicaBehaviour
     {
         [Serializable]
@@ -32,9 +38,16 @@ namespace Core.ModularBuildings
             }
         }
         
+        [SerializeField]
         List<BuildingSlot> _slots = new List<BuildingSlot>();
+
+        [SerializeField]
         List<BuildingSocket> _sockets = new List<BuildingSocket>();
+
+        [SerializeField]
         List<ushort> _childrenIdxForPart = new List<ushort>();
+
+        [SerializeField]
         List<ushort> _partChildren = new List<ushort>();
 
         void Start() {
@@ -122,6 +135,9 @@ namespace Core.ModularBuildings
             var newPrefab = Instantiate(prefab, transform);
             newPrefab.transform.position = part.position;
             newPrefab.transform.rotation = part.rotation;
+
+            //=> easiest way to set current client/server layers
+            newPrefab.layer = gameObject.layer;
 
             var newSlots = newPrefab.GetComponentsInChildren<BuildingSlot>();
             for (int i = 0; i < newSlots.Length; ++i) {
@@ -227,26 +243,63 @@ namespace Core.ModularBuildings
             _data.parts.RemoveAt(_data.parts.Count - 1);
         }
 
-        void Update()
-        {
-            if (_data.parts == null)
-                return;
+//         void Update()
+//         {
+//             if (_data.parts == null)
+//                 return;
+// 
+//             var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+// 
+//             for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
+//                 var part = _data.parts[partIdx];
+//                 var childrenIdx = _childrenIdxForPart[partIdx];
+// 
+//                 for (int i = 0; i < buildingManager.GetNumChildrenForPartType(_data.type, part.type); ++i) {
+//                     var childPartIdx = _partChildren[childrenIdx + i];
+//                     if (childPartIdx == ushort.MaxValue)
+//                         continue;
+// 
+//                     var childPart = _data.parts[childPartIdx];
+//                     DebugDraw.DrawLine(part.position, Vector3.Lerp(part.position, childPart.position, 0.5f), Color.blue);
+//                 }
+//             }
+//         }
 
-            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
-
-            for (int partIdx = 0; partIdx < _data.parts.Count; ++partIdx) {
-                var part = _data.parts[partIdx];
-                var childrenIdx = _childrenIdxForPart[partIdx];
-
-                for (int i = 0; i < buildingManager.GetNumChildrenForPartType(_data.type, part.type); ++i) {
-                    var childPartIdx = _partChildren[childrenIdx + i];
-                    if (childPartIdx == ushort.MaxValue)
-                        continue;
-
-                    var childPart = _data.parts[childPartIdx];
-                    DebugDraw.DrawLine(part.position, Vector3.Lerp(part.position, childPart.position, 0.5f), Color.blue);
+#if SERVER
+        public override void Serialize(BitStream bs, ReplicaSerializationMode mode, ReplicaView view) {
+            if (mode == ReplicaSerializationMode.Full) {
+                bs.Write(data.type);
+                
+                bs.Write(data.parts.Count);
+                foreach(var part in data.parts) {
+                    bs.Write(part.type);
+                    bs.Write(part.position);
+                    bs.Write(part.rotation);
                 }
             }
         }
+#endif
+
+#if CLIENT
+        public override void Deserialize(BitStream bs, ReplicaSerializationMode mode) {
+            if (mode == ReplicaSerializationMode.Full) {
+                _data.type = bs.ReadNetworkObject<BuildingType>();
+
+                _data.parts.Clear();
+                Clear();
+                var count = bs.ReadInt();
+
+                for (int i = 0; i < count; i++) {
+                    var part = new Part();
+                    part.type = bs.ReadNetworkObject<BuildingPartType>();
+                    part.position = bs.ReadVector3();
+                    part.rotation = bs.ReadQuaternion();
+
+                    _data.parts.Add(part);
+                }
+                Rebuild();
+            }
+        }
+#endif
     }
 }

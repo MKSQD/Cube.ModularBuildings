@@ -21,7 +21,6 @@ namespace Core.ModularBuildings
 
             buildingGo.transform.position = position;
             buildingGo.transform.rotation = rotation;
-            buildingGo.transform.localScale = Vector3.one * 3;
 
             var building = buildingGo.GetComponent<Building>();
             Assert.IsNotNull(building);

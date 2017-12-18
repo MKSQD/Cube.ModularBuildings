@@ -9,6 +9,8 @@ namespace Core.ModularBuildings
     [AddComponentMenu("Core.ModularBuildings/Builder")]
     public class Builder : EquippableItem
     {
+        const float SNAP_DISTANCE = 0.75f;
+
         [Serializable]
         struct KeyPartBinding {
             public KeyCode key;
@@ -49,14 +51,24 @@ namespace Core.ModularBuildings
             if (Time.time < _nextShotTime)
                 return;
 
-            _nextShotTime = Time.time + 1f;
+            _nextShotTime = Time.time + 0.2f;
 
-            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding) {
-                RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType);
-            } else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied) {
-                var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
-                RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot);
-            }
+            if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding)
+                BuildNew();
+            else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied)
+                Build();
+        }
+
+        void BuildNew() {
+            RpcBuildNew(_currentBuildingBuildPosition, _currentBuildingBuildRotation, _currentPartType);
+        }
+
+        void Build() {
+            var buildingReplica = _currentBuildingTheBlueprintIsSnappedTo.GetComponent<Replica>();
+            RpcBuild(buildingReplica, _currentPartType, _currentBuildingClosestSlot.type, _currentBuildingBuildPosition);
+
+            _currentBuildingTheBlueprintIsSnappedTo.AddPart(_currentPartType, _currentBuildingClosestSlot);
+            _currentBuildingTheBlueprintIsSnappedTo.Rebuild();
         }
 
         [ReplicaRpc(RpcTarget.Server)]
@@ -69,13 +81,21 @@ namespace Core.ModularBuildings
         }
 
         [ReplicaRpc(RpcTarget.Server)]
-        void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlot slot) {
+        void RpcBuild(Replica buildingReplica, BuildingPartType partType, BuildingSlotType buildingSlotType, Vector3 slotPosition) {
             var building = buildingReplica.GetComponent<Building>();
+            
+            float distance = 0;
+            var slot = building.GetClosestSlot(slotPosition, buildingSlotType, true, out distance);
+            //#TODO check distance
+
+            Assert.IsNotNull(slot);
+
             building.AddPart(partType, slot);
             building.Rebuild();
         }
 
         void Update() {
+            
             UpdatePartType();
             UpdateBlueprint();
         }
@@ -102,7 +122,6 @@ namespace Core.ModularBuildings
             var prefab = _type.buildingType.GetPrefabForPartType(_currentPartType);
 
             _blueprint = Instantiate(prefab);
-            _blueprint.transform.localScale = Vector3.one * 3.025f;
             _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
             foreach (var collider in _blueprint.GetComponents<Collider>()) {
                 collider.enabled = false;
@@ -134,6 +153,7 @@ namespace Core.ModularBuildings
             var occupied = false;
             var building = buildingManager.GetBuildingInRange(buildPosition);
             if (building != null) {
+
                 float closestDistance = float.MaxValue;
 
                 var sockets = _blueprint.GetComponentsInChildren<BuildingSocket>();
@@ -143,11 +163,13 @@ namespace Core.ModularBuildings
                     if (slot == null)
                         continue;
 
-                    if (distance < 0.25f && distance < closestDistance) {
+                    if (distance <= SNAP_DISTANCE && distance < closestDistance) {
                         closestDistance = distance;
                         closestSlot = slot;
                     }
                 }
+
+                //Debug.Log(closestSlot);
 
                 if (closestSlot != null) {
                     buildPosition = closestSlot.transform.position;

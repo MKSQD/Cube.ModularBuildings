@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Core.ModularBuildings/Building Type")]
-public class BuildingType : ScriptableObject
+public class BuildingType : NetworkObject
 {
     [Serializable]
     struct Entry
