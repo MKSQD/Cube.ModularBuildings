@@ -84,7 +84,7 @@ namespace Core.ModularBuildings
             
             BuildingSlot closestSlot = null;
             var occupied = false;
-            var building = buildingManager.GetBuildingInRange(buildPosition);
+            var building = buildingManager.GetBuildingInRange(buildPosition, 3f);
             if (building != null) {
                 float closestDistance = float.MaxValue;
 

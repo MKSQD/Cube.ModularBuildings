@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 using Core.Networking;
 using Core.Networking.Server;
@@ -10,7 +11,7 @@ namespace Core.ModularBuildings
     public class BuildingSystem : MonoBehaviour, IBuildingSystem
     {
         [SerializeField]
-        Building _building; //#TODO replace with List<Building>
+        List<Building> _buildings;
 
         public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)
         {
@@ -32,13 +33,29 @@ namespace Core.ModularBuildings
             return building;
         }
 
-        public void RegisterBuilding(Building newBuilding) {
-            _building = newBuilding;
+        public void RegisterBuilding(Building building) {
+            if (_buildings == null)
+                _buildings = new List<Building>();
+
+            _buildings.Add(building);
         }
 
-        public Building GetBuildingInRange(Vector3 position)
+        public Building GetBuildingInRange(Vector3 position, float maxDistance)
         {
-            return _building;
+            float closestDistance = float.MaxValue;
+            Building closestBuilding = null;
+
+            foreach (var building in _buildings) {
+                float distance;
+                var slot = building.GetClosestSlot(position, BuildingSlotType.All, true, out distance);
+
+                if(distance <= maxDistance && distance < closestDistance) {
+                    closestDistance = distance;
+                    closestBuilding = building;
+                }
+            }
+
+            return closestBuilding;
         }
         
         public int GetNumChildrenForPartType(BuildingType type, BuildingPartType partType)
@@ -73,13 +90,13 @@ namespace Core.ModularBuildings
         //             }
         //         }
 
-        void OnApplicationQuit()
-        {
-            if (_building == null || _building.data.parts.Count == 0)
-                return;
-
-            var str = JsonUtility.ToJson(_building.data);
-            File.WriteAllText("test.building", str);
-        }
+//         void OnApplicationQuit()
+//         {
+//             if (_building == null || _building.data.parts.Count == 0)
+//                 return;
+// 
+//             var str = JsonUtility.ToJson(_building.data);
+//             File.WriteAllText("test.building", str);
+//         }
     }
 }

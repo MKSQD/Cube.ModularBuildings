@@ -6,7 +6,7 @@ namespace Core.ModularBuildings
     {
         Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation);
         void RegisterBuilding(Building newBuilding);
-        Building GetBuildingInRange(Vector3 position);
+        Building GetBuildingInRange(Vector3 position, float maxDistance);
         int GetNumChildrenForPartType(BuildingType type, BuildingPartType partType);
     }
 }

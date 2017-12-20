@@ -9,7 +9,7 @@ namespace Core.ModularBuildings
     [AddComponentMenu("Core.ModularBuildings/Builder")]
     public class Builder : EquippableItem
     {
-        const float SNAP_DISTANCE = 0.75f;
+        const float PART_SNAP_DISTANCE = 0.75f;
 
         [Serializable]
         struct KeyPartBinding {
@@ -52,7 +52,7 @@ namespace Core.ModularBuildings
                 return;
 
             _nextShotTime = Time.time + 0.2f;
-
+            
             if (_currentBuildingTheBlueprintIsSnappedTo == null && _currentPartType.canCreateNewBuilding)
                 BuildNew();
             else if (_currentBuildingClosestSlot != null && !_currentBuildingSlotOccupied)
@@ -151,7 +151,7 @@ namespace Core.ModularBuildings
 
             BuildingSlot closestSlot = null;
             var occupied = false;
-            var building = buildingManager.GetBuildingInRange(buildPosition);
+            var building = buildingManager.GetBuildingInRange(buildPosition, PART_SNAP_DISTANCE * 2f);
             if (building != null) {
 
                 float closestDistance = float.MaxValue;
@@ -163,7 +163,7 @@ namespace Core.ModularBuildings
                     if (slot == null)
                         continue;
 
-                    if (distance <= SNAP_DISTANCE && distance < closestDistance) {
+                    if (distance <= PART_SNAP_DISTANCE && distance < closestDistance) {
                         closestDistance = distance;
                         closestSlot = slot;
                     }

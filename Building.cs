@@ -60,7 +60,7 @@ namespace Core.ModularBuildings
             closestDistance = float.MaxValue;
             BuildingSlot closestSlot = null;
             foreach (var slot in _slots) {
-                if (slot.type != slotType)
+                if (slot.type != slotType && slotType != BuildingSlotType.All)
                     continue;
 
                 if (forPlacement && slot.ignoreForPlacement)
@@ -81,7 +81,7 @@ namespace Core.ModularBuildings
 
             var slots = new List<BuildingSlot>();
             foreach (var slot in _slots) {
-                if (slot.type != slotType)
+                if (slot.type != slotType && slotType != BuildingSlotType.All)
                     continue;
 
                 if (ignorePartIdx != -1) {
@@ -103,7 +103,7 @@ namespace Core.ModularBuildings
 
             var sockets = new List<BuildingSocket>();
             foreach (var socket in _sockets) {
-                if (socket.slotType != slotType)
+                if (socket.slotType != slotType && slotType != BuildingSlotType.All)
                     continue;
 
                 var dist = (socket.transform.position - position).sqrMagnitude;
@@ -219,6 +219,9 @@ namespace Core.ModularBuildings
                 rotation = partRotation
             };
             _data.parts.Add(newPart);
+
+
+            //#TODO extend bounds
         }
 
         public int GetClosestPartIdx(Vector3 position)
