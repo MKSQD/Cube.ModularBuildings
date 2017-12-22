@@ -72,12 +72,15 @@ namespace Core.ModularBuildings
         }
 
         [ReplicaRpc(RpcTarget.Server)]
-        void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType) {
+        void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType)
+        {
+#if SERVER
             var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
             var newBuilding = buildingManager.CreateBuilding(_type.buildingType, position, rotation);
             newBuilding.AddPart(partType, null);
             newBuilding.Rebuild();
+#endif
         }
 
         [ReplicaRpc(RpcTarget.Server)]

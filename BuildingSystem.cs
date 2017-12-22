@@ -13,6 +13,7 @@ namespace Core.ModularBuildings
         [SerializeField]
         List<Building> _buildings;
 
+#if SERVER
         public Building CreateBuilding(BuildingType type, Vector3 position, Quaternion rotation)
         {
             Assert.IsNotNull(type.serverBuildingPrefab);
@@ -32,6 +33,7 @@ namespace Core.ModularBuildings
 
             return building;
         }
+#endif
 
         public void RegisterBuilding(Building building) {
             if (_buildings == null)
