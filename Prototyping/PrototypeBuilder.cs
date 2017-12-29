@@ -115,7 +115,7 @@ namespace Core.ModularBuildings
             var canBuild = (_currentPartType.canCreateNewBuilding && building == null || closestSlot != null) && !occupied;
             if (canBuild && Input.GetMouseButton(0)) {
                 if (building == null) {
-                    building = buildingManager.CreateBuilding(_buildingType, buildPosition, buildRotation);
+                    //building = buildingManager.CreateBuilding(_buildingType, buildPosition, buildRotation);
                 }
                 building.AddPart(_currentPartType, closestSlot);
                 building.Rebuild();
