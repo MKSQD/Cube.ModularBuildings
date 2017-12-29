@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5624ca48311c732479105984277339d9, type: 3}
+  m_Name: DefaultBuilder
+  m_EditorClassIdentifier: 
+  networkAssetId: dcf5af94b557aad4b8b37002ffc6641f
+  serverWorldModelPrefab: {fileID: 1340230230301814, guid: 21069a2b41e65c241bd0c588c3658cd9,
+    type: 2}
+  clientWorldModelPrefab: {fileID: 1271622899888946, guid: 82d10ff16b4a92f42b9d64dc98d4ce7f,
+    type: 2}
+  serverEquippedItemPrefab: {fileID: 1671169605052720, guid: 46e8deecf0c4ce84f8254ea98d3e2c50,
+    type: 2}
+  buildingType: {fileID: 11400000, guid: e99d4fc80650f1545a9378eb2ffe0c5b, type: 2}
