@@ -75,7 +75,7 @@ namespace Core.ModularBuildings
         void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType)
         {
 #if SERVER
-            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+            var buildingManager = gameObject.GetSystem<IBuildingSystem>();
 
             var newBuilding = buildingManager.CreateBuilding(_type.buildingType, position, rotation);
             newBuilding.AddPart(partType, null);
@@ -143,7 +143,7 @@ namespace Core.ModularBuildings
             if (_blueprint == null)
                 return;
 
-            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+            var buildingManager = gameObject.GetSystem<IBuildingSystem>();
 
             var buildPosition = Camera.main.transform.position + Camera.main.transform.rotation * Vector3.forward * 3f;
             var buildRotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up);

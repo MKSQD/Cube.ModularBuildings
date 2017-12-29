@@ -18,7 +18,7 @@ namespace Core.ModularBuildings
         {
             Assert.IsNotNull(type.serverBuildingPrefab);
 
-            var server = SystemProvider.GetSystem<UnityServer>(gameObject);
+            var server = gameObject.GetSystem<IUnityServer>();
             var buildingGo = server.replicaManager.InstantiateReplica(type.serverBuildingPrefab);
 
             buildingGo.transform.position = position;
@@ -72,7 +72,7 @@ namespace Core.ModularBuildings
 
         void Awake()
         {
-            SystemProvider.SetSystem<IBuildingSystem>(gameObject, this);
+            gameObject.SetSystem<IBuildingSystem>(this);
         }
 
         //         void Start()

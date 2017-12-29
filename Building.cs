@@ -51,7 +51,7 @@ namespace Core.ModularBuildings
         List<ushort> _partChildren = new List<ushort>();
 
         void Start() {
-            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
+            var buildingManager = gameObject.GetSystem<IBuildingSystem>();
             buildingManager.RegisterBuilding(this);
         }
 
