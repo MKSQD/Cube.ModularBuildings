@@ -32,13 +32,14 @@ namespace Core.ModularBuildings
         [SerializeField]
         KeyPartBinding[] _bindings;
 
-        BuilderType _type;
+        //BuilderType _type;
         Pawn _pawn;
 
         float _nextShotTime;
 
-        public override void Equip(EquippableItemType itemType, Replica owner) {
-            _type = (BuilderType)itemType;
+        public override void Equip(ItemType itemType, Replica owner) {
+            //#TODO item type extension
+            //_type = (BuilderType)itemType;
             _pawn = GetComponentInParent<Pawn>();
 
             RebuildBlueprint();
@@ -74,13 +75,13 @@ namespace Core.ModularBuildings
         [ReplicaRpc(RpcTarget.Server)]
         void RpcBuildNew(Vector3 position, Quaternion rotation, BuildingPartType partType)
         {
-#if SERVER
-            var buildingManager = gameObject.GetSystem<IBuildingSystem>();
+//#if SERVER
+//            var buildingManager = SystemProvider.GetSystem<IBuildingSystem>(gameObject);
 
-            var newBuilding = buildingManager.CreateBuilding(_type.buildingType, position, rotation);
-            newBuilding.AddPart(partType, null);
-            newBuilding.Rebuild();
-#endif
+//            var newBuilding = buildingManager.CreateBuilding(_type.buildingType, position, rotation);
+//            newBuilding.AddPart(partType, null);
+//            newBuilding.Rebuild();
+//#endif
         }
 
         [ReplicaRpc(RpcTarget.Server)]
@@ -117,18 +118,18 @@ namespace Core.ModularBuildings
         }
 
         void RebuildBlueprint() {
-            DestroyBlueprint();
+            //DestroyBlueprint();
 
-            if (!isClient || _currentPartType == null || _pawn.controller == null)
-                return;
+            //if (!isClient || _currentPartType == null || _pawn.controller == null)
+            //    return;
 
-            var prefab = _type.buildingType.GetPrefabForPartType(_currentPartType);
+            //var prefab = _type.buildingType.GetPrefabForPartType(_currentPartType);
 
-            _blueprint = Instantiate(prefab);
-            _blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
-            foreach (var collider in _blueprint.GetComponents<Collider>()) {
-                collider.enabled = false;
-            }
+            //_blueprint = Instantiate(prefab);
+            //_blueprint.GetComponent<Renderer>().sharedMaterial = blueprintMaterial;
+            //foreach (var collider in _blueprint.GetComponents<Collider>()) {
+            //    collider.enabled = false;
+            //}
         }
 
         void DestroyBlueprint() {
