@@ -11,11 +11,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7163499d7cbcfc94bb4a65b170ed67ab, type: 3}
   m_Name: DefaultBuilder
   m_EditorClassIdentifier: 
-  networkAssetId: 7e21be8e0d7f0e344b4fe639e42154f7
+  networkAssetId: ff10b6358b20a2c439313161723ea0de
   serverWorldModelPrefab: {fileID: 1340230230301814, guid: 21069a2b41e65c241bd0c588c3658cd9,
     type: 2}
   clientWorldModelPrefab: {fileID: 1271622899888946, guid: 82d10ff16b4a92f42b9d64dc98d4ce7f,
     type: 2}
   extensions:
-  - {fileID: 11400000, guid: 275d78dcb9e05454b824b231f3bad8b2, type: 2}
-  - {fileID: 11400000, guid: 93332d81b2c99384e90c02c1fc0a7494, type: 2}
+  - {fileID: 114376856246672818}
+  - {fileID: 114513968975111178}
+--- !u!114 &114376856246672818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f77d8871e07e75442946249ed0df26ab, type: 3}
+  m_Name: EquippableItemTypeExtension
+  m_EditorClassIdentifier: 
+  serverEquippableItemPrefab: {fileID: 1671169605052720, guid: 46e8deecf0c4ce84f8254ea98d3e2c50,
+    type: 2}
+--- !u!114 &114513968975111178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2d0c3c2a24df9843916a2c7283f98d1, type: 3}
+  m_Name: BuilderItemTypeExtension
+  m_EditorClassIdentifier: 
+  buildingType: {fileID: 11400000, guid: e99d4fc80650f1545a9378eb2ffe0c5b, type: 2}
