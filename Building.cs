@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Core.Networking;
-using Core.Networking.Server;
+using Cube.Networking;
+using Cube.Networking.Server;
+using BitStream = Cube.Networking.BitStream;
 
-using BitStream = Core.Networking.Shared.BitStream;
-
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
     //#TODO Layers for client/server
     //#TODO chunks (sync bigger buildings)

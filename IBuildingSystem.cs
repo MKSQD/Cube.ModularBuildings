@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
     public interface IBuildingSystem
     {

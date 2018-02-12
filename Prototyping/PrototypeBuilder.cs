@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Core.ModularBuildings;
+using Cube.ModularBuildings;
 using System;
 
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
     class PrototypeBuilder : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[AddComponentMenu("Core.Building/Socket")]
+[AddComponentMenu("Cube.Building/Socket")]
 public class BuildingSocket : MonoBehaviour
 {
     public BuildingSlotType slotType;
