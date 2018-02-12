@@ -2,11 +2,11 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using Core.Networking;
-using Core.Networking.Server;
+using Cube.Networking;
+using Cube.Networking.Server;
 using UnityEngine.Assertions;
 
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
     public class BuildingSystem : MonoBehaviour, IBuildingSystem
     {
@@ -49,7 +49,7 @@ namespace Core.ModularBuildings
 
             foreach (var building in _buildings) {
                 float distance;
-                var slot = building.GetClosestSlot(position, BuildingSlotType.All, true, out distance);
+                building.GetClosestSlot(position, BuildingSlotType.All, true, out distance);
 
                 if(distance <= maxDistance && distance < closestDistance) {
                     closestDistance = distance;

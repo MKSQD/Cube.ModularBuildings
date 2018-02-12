@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum BuildingSlotType
 {
@@ -10,7 +8,7 @@ public enum BuildingSlotType
     Wall
 }
 
-[AddComponentMenu("Core.Building/Slot")]
+[AddComponentMenu("Cube.Building/Slot")]
 public class BuildingSlot : MonoBehaviour
 {
     public BuildingSlotType type;

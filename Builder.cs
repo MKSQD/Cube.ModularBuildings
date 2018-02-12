@@ -1,12 +1,12 @@
-﻿using Core.Gameplay;
-using Core.Networking;
+﻿using Cube.Gameplay;
+using Cube.Networking;
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
-    [AddComponentMenu("Core.ModularBuildings/Builder")]
+    [AddComponentMenu("Cube.ModularBuildings/Builder")]
     public class Builder : EquippableItem
     {
         const float PART_SNAP_DISTANCE = 0.75f;

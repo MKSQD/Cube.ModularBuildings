@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Core.Gameplay;
+using Cube.Gameplay;
 
-namespace Core.ModularBuildings
+namespace Cube.ModularBuildings
 {
     public class BuilderItemTypeExtension : ItemTypeExtension
     {
