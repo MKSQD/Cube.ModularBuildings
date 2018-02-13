@@ -1,0 +1,10 @@
+{
+    "name": "Cube.ModularBuildings",
+    "references": [
+        "Cube.Gameplay",
+        "Cube.Networking",
+        "Cube.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
