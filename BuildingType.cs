@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Cube.Networking;
+using System;
 using UnityEngine;
 
 namespace Cube.ModularBuildings
 {
-    [CreateAssetMenu(menuName = "Cube.ModularBuildings/Building Type")]
+    [CreateAssetMenu(menuName = "Cube.ModularBuildings/BuildingType")]
     public class BuildingType : NetworkObject
     {
         [Serializable]

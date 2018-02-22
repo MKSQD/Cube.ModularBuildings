@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using Cube.Networking;
+using UnityEngine;
 
-[CreateAssetMenu(menuName = "Cube.ModularBuildings/BuildingPartType")]
-public class BuildingPartType : NetworkObject
+namespace Cube.ModularBuildings
 {
-    public bool canCreateNewBuilding = false;
+    [CreateAssetMenu(menuName = "Cube.ModularBuildings/BuildingPartType")]
+    public class BuildingPartType : NetworkObject
+    {
+        public bool canCreateNewBuilding = false;
+    }
 }
